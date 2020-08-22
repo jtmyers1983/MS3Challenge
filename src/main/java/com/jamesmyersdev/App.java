@@ -14,7 +14,8 @@ public class App
 {
     public static void main( String[] args ) throws IOException, CsvValidationException {
 
-        CSVReader reader = new CSVReader(new FileReader("ms3Interview - Jr Challenge 2.csv"));
+        CSVReader reader = new CSVReader(new FileReader("ms3Interview.csv"));
+
         String [] nextLine;
         while ((nextLine = reader.readNext()) != null) {
             // nextLine[] is an array of values from the line
