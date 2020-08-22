@@ -5,6 +5,7 @@ import com.opencsv.exceptions.CsvValidationException;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Hello world!
@@ -17,9 +18,11 @@ public class App
         CSVReader reader = new CSVReader(new FileReader("ms3Interview.csv"));
 
         String [] nextLine;
+        nextLine = reader.readNext();
         while ((nextLine = reader.readNext()) != null) {
-            // nextLine[] is an array of values from the line
-            System.out.println(nextLine[0]);
+            if (Arrays.asList(nextLine).contains("")) {
+                System.out.println(nextLine[0]);
+            }
         }
 
     }
