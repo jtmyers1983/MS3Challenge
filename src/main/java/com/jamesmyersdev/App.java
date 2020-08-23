@@ -44,7 +44,7 @@ public class App
 
         // ---- close connection to database ----
         try {
-            conn.close();
+            conn.close(); 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -52,6 +52,7 @@ public class App
     }
 
     public static void addRow(PreparedStatement stmt, String[] nextLine) {
+        // add row data to current batch to be inserted into database
         try {
             stmt.setString(1, nextLine[0]);
             stmt.setString(2, nextLine[1]);
@@ -64,7 +65,7 @@ public class App
             stmt.setString(9, nextLine[8]);
             stmt.setString(10, nextLine[9]);
 
-            stmt.addBatch();
+            stmt.addBatch(); // add current row nextLine to batch
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -93,7 +94,7 @@ public class App
         if (batchSize > 0) { // execute remaining data
             stmt.executeBatch();
         }
-        writer.close();
+        writer.close();  // close reader and writer
         reader.close();
     }
 }
