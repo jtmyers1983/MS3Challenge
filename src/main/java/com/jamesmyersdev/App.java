@@ -74,7 +74,7 @@ public class App
 
         CSVReader reader = new CSVReader(new FileReader(csvFile));
         CSVWriter writer = new CSVWriter(new FileWriter(badCsvFile));
-
+        int batchSize = 0;
         String [] nextLine;
         nextLine = reader.readNext(); // skipping row with headers
 
@@ -84,9 +84,15 @@ public class App
             } else {
                 addRow(stmt, nextLine);
             }
+            if (batchSize++ > 100) { // execute every 100 rows
+                stmt.executeBatch();
+                batchSize = 0;
+            }
         }
 
-        stmt.executeBatch();
+        if (batchSize > 0) { // execute remaining data
+            stmt.executeBatch();
+        }
         writer.close();
         reader.close();
     }
