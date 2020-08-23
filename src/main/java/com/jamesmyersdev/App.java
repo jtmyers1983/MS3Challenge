@@ -44,7 +44,7 @@ public class App
 
         // ---- close connection to database ----
         try {
-            conn.close(); 
+            conn.close();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
