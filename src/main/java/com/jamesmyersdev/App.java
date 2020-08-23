@@ -40,20 +40,7 @@ public class App
             if (Arrays.asList(nextLine).contains("")) { // OpenCSV will replace null values with empty string
                 writer.writeNext(nextLine); // if empty string exists as value, write that line to ms3Interview-bad.csv
             } else {
-                try {
-                    stmt.setString(1, nextLine[0]);
-                    stmt.setString(2, nextLine[1]);
-                    stmt.setString(3, nextLine[2]);
-                    stmt.setString(4, nextLine[3]);
-                    stmt.setString(5, nextLine[4]);
-                    stmt.setString(6, nextLine[5]);
-                    stmt.setString(7, nextLine[6]);
-                    stmt.setString(8, nextLine[7]);
-                    stmt.setString(9, nextLine[8]);
-                    stmt.setString(10, nextLine[9]);
-                } catch (SQLException e) {
-                    System.err.println(e.getMessage());
-                }
+                addRow(stmt, nextLine);
             }
         }
 
@@ -65,5 +52,24 @@ public class App
 
         writer.close();
         reader.close();
+    }
+
+    public static void addRow(PreparedStatement stmt, String[] nextLine) {
+        try {
+            stmt.setString(1, nextLine[0]);
+            stmt.setString(2, nextLine[1]);
+            stmt.setString(3, nextLine[2]);
+            stmt.setString(4, nextLine[3]);
+            stmt.setString(5, nextLine[4]);
+            stmt.setString(6, nextLine[5]);
+            stmt.setString(7, nextLine[6]);
+            stmt.setString(8, nextLine[7]);
+            stmt.setString(9, nextLine[8]);
+            stmt.setString(10, nextLine[9]);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
     }
 }
