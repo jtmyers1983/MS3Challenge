@@ -37,6 +37,8 @@ public class App
             System.err.println(e.getMessage());
         } catch (CsvValidationException e) {
             System.err.println(e.getMessage());
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
         // ------------------------------
 
@@ -62,13 +64,13 @@ public class App
             stmt.setString(9, nextLine[8]);
             stmt.setString(10, nextLine[9]);
 
-            stmt.executeUpdate();
+            stmt.addBatch();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
     }
 
-    public static void csvParser(String csvFile, String badCsvFile, PreparedStatement stmt) throws IOException, CsvValidationException {
+    public static void csvParser(String csvFile, String badCsvFile, PreparedStatement stmt) throws IOException, CsvValidationException, SQLException {
 
         CSVReader reader = new CSVReader(new FileReader(csvFile));
         CSVWriter writer = new CSVWriter(new FileWriter(badCsvFile));
@@ -84,6 +86,7 @@ public class App
             }
         }
 
+        stmt.executeBatch();
         writer.close();
         reader.close();
     }
