@@ -26,8 +26,9 @@ public class App
         PreparedStatement stmt = null;
 
         try {
-            conn = DriverManager.getConnection("jdbc:sqlite:/sqlite/ms3Interview.db");
-            stmt = conn.prepareStatement("INSERT INTO Customers(A, B, C, D, E, F, G, H, I, J) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            conn = DriverManager.getConnection("jdbc:sqlite:sqlite/ms3Interview.db");
+            System.out.println("Connection Successful");
+            stmt = conn.prepareStatement("INSERT INTO customers(A, B, C, D, E, F, G, H, I, J) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
