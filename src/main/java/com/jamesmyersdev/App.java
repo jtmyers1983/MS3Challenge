@@ -15,13 +15,9 @@ import java.util.Arrays;
 
 public class App 
 {
-    public static void main( String[] args ) throws IOException, CsvValidationException {
+    public static void main( String[] args ) {
 
-        // initialize reader and writer
-        CSVReader reader = new CSVReader(new FileReader("ms3Interview.csv"));
-        CSVWriter writer = new CSVWriter(new FileWriter("ms3Interview-bad.csv"));
-
-        // connect to database
+        // ---- connect to database ----
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -32,26 +28,25 @@ public class App
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+        // ------------------------------
 
-        String [] nextLine;
-        nextLine = reader.readNext(); // skipping row with headers
-
-        while ((nextLine = reader.readNext()) != null) {
-            if (Arrays.asList(nextLine).contains("")) { // OpenCSV will replace null values with empty string
-                writer.writeNext(nextLine); // if empty string exists as value, write that line to ms3Interview-bad.csv
-            } else {
-                addRow(stmt, nextLine);
-            }
+        // ---- csvParser method used to read the csv file and perform appropriate action ----
+        try {
+            csvParser("ms3Interview.csv", "ms3Interview-bad.csv", stmt);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        } catch (CsvValidationException e) {
+            System.err.println(e.getMessage());
         }
+        // ------------------------------
 
+        // ---- close connection to database ----
         try {
             conn.close();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-
-        writer.close();
-        reader.close();
+        // ------------------------------
     }
 
     public static void addRow(PreparedStatement stmt, String[] nextLine) {
@@ -71,5 +66,25 @@ public class App
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    public static void csvParser(String csvFile, String badCsvFile, PreparedStatement stmt) throws IOException, CsvValidationException {
+
+        CSVReader reader = new CSVReader(new FileReader(csvFile));
+        CSVWriter writer = new CSVWriter(new FileWriter(badCsvFile));
+
+        String [] nextLine;
+        nextLine = reader.readNext(); // skipping row with headers
+
+        while ((nextLine = reader.readNext()) != null) {
+            if (Arrays.asList(nextLine).contains("")) { // OpenCSV will replace null values with empty string
+                writer.writeNext(nextLine); // if empty string exists as value, write that line to ms3Interview-bad.csv
+            } else {
+                addRow(stmt, nextLine);
+            }
+        }
+
+        writer.close();
+        reader.close();
     }
 }
