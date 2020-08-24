@@ -3,6 +3,8 @@ package com.jamesmyersdev;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -15,6 +17,7 @@ import java.util.Arrays;
 
 public class App 
 {
+
     public static void main( String[] args ) {
 
         // ---- connect to database ----
@@ -73,17 +76,27 @@ public class App
 
     public static void csvParser(String csvFile, String badCsvFile, PreparedStatement stmt) throws IOException, CsvValidationException, SQLException {
 
+        int received = 0; // total received records
+        int successful = 0; // records successfully inserted into database table
+        int failed = 0; // records missing information (written to ms3Interview-bad.csv file)
+        int batchSize = 0; // keep count of current batchSize
+        final Logger logger = LoggerFactory.getLogger(App.class); // initialize logger
+
+        // initialize OpenCSV reader and writer
         CSVReader reader = new CSVReader(new FileReader(csvFile));
         CSVWriter writer = new CSVWriter(new FileWriter(badCsvFile));
-        int batchSize = 0;
-        String [] nextLine;
+
+        String [] nextLine; // will hold each row
         nextLine = reader.readNext(); // skipping row with headers
 
         while ((nextLine = reader.readNext()) != null) {
+            received++;
             if (Arrays.asList(nextLine).contains("")) { // OpenCSV will replace null values with empty string
                 writer.writeNext(nextLine); // if empty string exists as value, write that line to ms3Interview-bad.csv
+                failed++;
             } else {
                 addRow(stmt, nextLine);
+                successful++;
             }
             if (batchSize++ > 100) { // execute every 100 rows
                 stmt.executeBatch();
@@ -96,5 +109,8 @@ public class App
         }
         writer.close();  // close reader and writer
         reader.close();
+        logger.debug("Records Received: " + received);
+        logger.debug("Records Successful: " + successful);
+        logger.debug("Records Failed: " + failed);
     }
 }
